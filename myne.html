@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Draw mouse with HTML 1</title>
+   <style>
+      .content{
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-direction: column;
+      }
+      #canvas{
+         border: 3px solid seagreen;
+         width: 560px;
+         height: 360px;
+      }
+   </style>
+</head>
+<body>
+   <div class="content">
+      <h1> Drawing with mouse Event 1 </h1>
+      <canvas id="canvas" width="560" height="360"></canvas>
+   </div>
+   <script>
+      var x = 0;
+     var y = 0;
+     var x0 = 0;
+     var y0 = 0;
+     const XX = [];
+     const YY = [];
+     var cle = -1
+     updateKeysDown = function(e) {
+	 cle = e.keyCode;
+	 console.log(cle);
+     }
+     updateKeysUp = function(e) {
+	 cle = -1;
+	 console.log(cle);
+     }
+     document.onkeydown = updateKeysDown;
+     document.onkeyup = updateKeysUp;
+
+      var isdrawing = false;
+      const cnv = document.getElementById("canvas");
+      const ctx = cnv.getContext("2d");
+      cnv.addEventListener("mousedown", (e) => {
+          x = e.offsetX;
+          y = e.offsetY;
+	  x0 = x;
+	  y0 = y;
+          isdrawing = true;
+	  XX.length = 0;
+	  YY.length = 0;
+	  //YY = [];
+
+      });
+      cnv.addEventListener("mousemove" ,(e) =>{
+         if(isdrawing === true){
+             if (0) drawLine(x0, y0, e.offsetX, e.offsetY);
+             x = e.offsetX;
+             y = e.offsetY;
+	     XX.push(x);
+	     YY.push(y);
+         }
+      });
+     cnv.addEventListener("mouseup" ,(e) => {
+         if (0) for(let i=0;i<XX.length;i++) {
+	     eraseLine(x0, y0, XX[i], YY[i]);
+ 	     console.log(XX[i],YY[i]);
+	 }
+         if( isdrawing === true){
+	     if (cle==-1) {
+		 drawLine(x0, y0, e.offsetX, e.offsetY);
+		 x = 0;
+		 y = 0;
+	     }
+	     else {
+		 var x1=e.offsetX,y1=e.offsetY;
+		 drawLine(x0,y0,x0,y1); // vertical de (x0,y0)
+		 drawLine(x0,y1,x1,y1); // horizontal
+		 drawLine(x1,y1,x1,y0); // vertical
+		 drawLine(x1,y0,x0,y0); // horizontal
+	     }
+	     poserQuestion();
+             isdrawing = false;
+         }
+      });
+      function drawLine(x1, y1, x2, y2){
+         ctx.beginPath();
+         ctx.strokeStyle = "black";
+         ctx.lineWidth = 1;
+         ctx.moveTo(x1, y1);
+         ctx.lineTo(x2, y2);
+         ctx.stroke();
+         ctx.closePath();
+      }
+      function eraseLine(x1, y1, x2, y2){
+         ctx.beginPath();
+         ctx.strokeStyle = "white";
+         ctx.lineWidth = 1.1;
+         ctx.moveTo(x1, y1);
+         ctx.lineTo(x2, y2);
+         ctx.stroke();
+         ctx.closePath();
+      }
+     function poserQuestion() {
+	 var reponse = prompt("Quelle est votre question ?");
+	 // Faites quelque chose avec la réponse
+	 console.log("La réponse est : " + reponse);
+     }
+    </script>
+</body>
+</html>

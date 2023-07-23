@@ -18,22 +18,45 @@ class Object {
     constructor(deb,fin,lineOrSurf) {
 	this.deb = deb;
 	this.fin = fin;
-	this.type = "line";
+	this.type = lineOrSurf;
     }
-}
+    logConsole() {console.log("from ",this.deb.x,this.deb.y," to ",this.fin.x,this.fin.y," line=",this.type);}
+    draw() {
+	let line = this.type;
+	let deb = this.deb
+	let fin = this.fin;
+	let x0 = deb.x;
+	let y0 = deb.y;
+	let x1 = fin.x;
+	let y1 = fin.y;
+	if (line) 
+	    drawLine(x0, y0, x1, y1);
+	else {
+	    drawLine(x0,y0,x0,y1); // vertical de (x0,y0)
+	    drawLine(x0,y1,x1,y1); // horizontal
+	    drawLine(x1,y1,x1,y0); // vertical
+	    drawLine(x1,y0,x0,y0); // horizontal
+	}
+    }
+} // fin class Object {
+
+class Itineraire {
+    constructor() {this.itineraire = [];}
+    push(o) {this.itineraire.push(o);}
+    logConsole(){
+	for(let i=0;i<this.itineraire.length;i++)
+	    this.itineraire[i].logConsole();
+    }
+    draw() {
+	ctx.clearRect(0,0,h,w);
+	for(let i=0;i<this.itineraire.length;i++)
+	    this.itineraire[i].draw();
+    }
+} // fin class Itineraire {
 
 /*
-updateKeysDown = function(e) {
-    cle = e.keyCode;
-    console.log(cle);
-    for(i=0;i<lineOrSurf.length;i++) {
-	console.log(i,lineOrSurf[i].checked);
-    }
-}
-updateKeysUp = function(e) {
-    cle = -1;
-    console.log(cle);
-}
+updateKeysDown = function(e) { cle = e.keyCode; console.log(cle);}
+updateKeysUp = function(e) { cle = -1;}
 document.onkeydown = updateKeysDown;
 document.onkeyup = updateKeysUp;
 */
@@ -63,6 +86,9 @@ function poserQuestion() {
 }
 
 function test() {
+    itin.logConsole();
+    itin.draw();
+    return;
     ctx.clearRect(0,0,h,w);
     ctx.beginPath();
     ctx.moveTo(0, 100);
@@ -85,38 +111,28 @@ let y = 0;
 let x0 = 0;
 let y0 = 0;
 let cle = -1
-let isdrawing = false;
 const ctx = cnv.getContext("2d");
-cnv.addEventListener("mousedown", (e) => {
-    x = e.offsetX;
-    y = e.offsetY;
-    x0 = x;
-    y0 = y;
-    isdrawing = true;
-});
-cnv.addEventListener("mousemove" ,(e) =>{
-    return;
-    if(isdrawing === true){
-        x = e.offsetX;
-        y = e.offsetY;
-    }
-});
+const itin = new Itineraire();
+/*
+cnv.addEventListener("mousedown", (e) => {});
+cnv.addEventListener("mousemove" ,(e) => {});
+*/
 cnv.addEventListener("mouseup" ,(e) => {
+    let x1 = e.offsetX, y1 = e.offsetY;
     let line = lineOrSurf[0].checked;
-    if( isdrawing === true){
-	if (line) {
-	    drawLine(x0, y0, e.offsetX, e.offsetY);
-	    x = 0;
-	    y = 0;
-	}
-	else {
-	    poserQuestion();
-	    let x1=e.offsetX,y1=e.offsetY;
-	    drawLine(x0,y0,x0,y1); // vertical de (x0,y0)
-	    drawLine(x0,y1,x1,y1); // horizontal
-	    drawLine(x1,y1,x1,y0); // vertical
-	    drawLine(x1,y0,x0,y0); // horizontal
-	}
-        isdrawing = false;
+    let myO = new Object( new Point(x0,y0),new Point(x1,y1),line);
+    myO.logConsole();
+    itin.push(myO);
+    if (line) {
+	drawLine(x0, y0, x1, y1);
     }
+    else {
+	poserQuestion();
+	drawLine(x0,y0,x0,y1); // vertical de (x0,y0)
+	drawLine(x0,y1,x1,y1); // horizontal
+	drawLine(x1,y1,x1,y0); // vertical
+	drawLine(x1,y0,x0,y0); // horizontal
+    }
+    x0 = x1;
+    y0 = y1;
 });

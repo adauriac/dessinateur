@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Draw mouse with HTML 1</title>
+    <title>Trajectory Maker</title>
     <style>
       .content{
           display: flex;
@@ -20,16 +20,16 @@
     <div class="aux">
       <form>
 	<label for="a" >I want to enter a </label>
-	<input type="radio" id="line" name="quoi" value="line">
+	<input type="radio" id="line" name="quoi" value="line" checked>
 	<label for="line">line</label>
 	<input type="radio" id="surface" name="quoi" value="surface">
-	<label for="css">surface</label>
+	<label for="css">zig zag</label>
 	<input type="button" onclick="test()" value="test">
 	<br>
        </form>
     </div>
     <div class="content">
-      <h1> Drawing with mouse Event 2 </h1>
+      <h1> Trajectory Maker</h1>
       <canvas id="canvas" width="560" height="360"></canvas>
     </div>
     <script src="script.js"></script>

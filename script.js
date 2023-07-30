@@ -53,7 +53,8 @@ class TrajectoryPiece {
 	    drawLine(x1,y0,x0,y0); // horizontal
 	}
     }
-} // fin class TrajectoryPiece {
+}     // FIN class TrajectoryPiece {
+// ******************************************************************************
 
 class Trajectory {
     constructor() {this.itineraire = [];}
@@ -69,14 +70,8 @@ class Trajectory {
 	    this.itineraire[i].draw();
 	} // FIN draw()
     }
-} // fin class Trajectory {
-
-/*
-  updateKeysDown = function(e) { cle = e.keyCode; console.log(cle);}
-  updateKeysUp = function(e) { cle = -1;}
-  document.onkeydown = updateKeysDown;
-  document.onkeyup = updateKeysUp;
-*/
+}     // FIN class Trajectory {
+// ******************************************************************************
 
 function drawLine(x1, y1, x2, y2){
     ctx.beginPath();
@@ -113,7 +108,7 @@ function poserQuestion() {
     let cas = "?";
     let n = 0;
     while (1) {
-	let reponse = prompt("serpentins horizontaux ou verticaux et combien ? ");
+	let reponse = prompt("zigzag horizontaux ou verticaux et combien ? format: [H/V] n>=0");
 	const myArray = reponse.split(" ");
 	if ((myArray[0] !="H") && (myArray[0] != "V") )
 	    continue;
@@ -124,7 +119,7 @@ function poserQuestion() {
 	if (n<0)
 	    continue
 	if (cas == "V")
-	    n = -n;
+	    n = -n; 
 	break;
     }
     return n;
@@ -135,12 +130,6 @@ function test() {
     itin.logConsole();
     itin.draw();
     return;
-    ctx.clearRect(0,0,h,w);
-    ctx.beginPath();
-    ctx.moveTo(0, 100);
-    ctx.lineTo(100, 0);
-    ctx.stroke();
-    ctx.closePath();
 } // FIN test()
 // ****************************************************************************
 
@@ -157,44 +146,16 @@ function onMouseUpAddNewPiece(e) {
 	drawLine(x0, y0, x1, y1);
     }
     else {
-	let n = poserQuestion();
+	let n = poserQuestion();  // le signe de n indique en X ou en Y
 	console.log(n);
 	if (n>0)
 	    barbouilleH(P0,P1,n);
 	else
-	    barbouilleV(P0,P1,n);
+	    barbouilleV(P0,P1,-n);
     }
     x0 = x1;
     y0 = y1;
 }     // FIN function oneMousUpAddNewPiece(e) {
-// ****************************************************************************
-
-function barbouilleV(P0,P1,n) {
-    // zig zag horizontaux : n parcours dans sens inverse
-    let x0= P0.x;
-    let y0= P0.y;
-    let x1= P1.x;
-    let y1= P1.y;
-    if (n==0) {
-	drawLine(x0,y0,x1,y0);
-	drawLine(x1,y0,x1,y1);
-	return;
-    }
-    console.log("Pas IMPLEMENTEE");
-    return;
-    let Dy = (y0-y1)/(2.0*n);
-    let xCur = x1;
-    let yCur = y0;
-    drawLine(x0,y0,xCur,yCur);
-    console.log(x0,y0,xCur,yCur);
-    for(let i=0;i<n;i++) {
-	drawLine(x1,yCur,x1,yCur-Dy);
-	drawLine(x1,yCur-Dy,x0,yCur-Dy);
-	drawLine(x0,yCur-Dy,x0,yCur-2*Dy);
-	drawLine(x0,yCur-2*Dy,x1,yCur-2*Dy);
-	yCur -= 2*Dy;
-    }
-}     // FIN function barbouilleV(P0,P1) {
 // ****************************************************************************
 
 function barbouilleH(P0,P1,n) {
@@ -209,10 +170,9 @@ function barbouilleH(P0,P1,n) {
 	return;
     }
     let Dy = (y0-y1)/(2.0*n);
-    let xCur = x1;
     let yCur = y0;
-    drawLine(x0,y0,xCur,yCur);
-    console.log(x0,y0,xCur,yCur);
+    drawLine(x0,y0,x1,yCur);
+    console.log(x0,y0,x1,yCur);
     for(let i=0;i<n;i++) {
 	drawLine(x1,yCur,x1,yCur-Dy);
 	drawLine(x1,yCur-Dy,x0,yCur-Dy);
@@ -221,6 +181,31 @@ function barbouilleH(P0,P1,n) {
 	yCur -= 2*Dy;
     }
 }     // FIN function barbouilleH(P0,P1) {
+// ****************************************************************************
+
+function barbouilleV(P0,P1,n) {
+    // zig zag horizontaux : n parcours dans sens inverse
+    let x0= P0.x;
+    let y0= P0.y;
+    let x1= P1.x;
+    let y1= P1.y;
+    if (n==0) {
+	drawLine(x0,y0,x0,y1);
+	drawLine(x0,y1,x1,y1);
+	return;
+    }
+    let Dx = (x0-x1)/(2.0*n);
+    let xCur = x0;
+    drawLine(x0,y0,xCur,y1);
+    console.log(x0,y0,xCur,y1); // X cst vertical
+    for(let i=0;i<n;i++) {
+	drawLine(xCur,y1,xCur-Dx,y1);         // Y cst horizontal 
+	drawLine(xCur-Dx,y0,xCur-Dx,y1);      // 
+	drawLine(xCur-Dx,y0,xCur-2*Dx,y0);
+	drawLine(xCur-2*Dx,y0,xCur-2*Dx,y1);
+	xCur -= 2*Dx;
+    }
+}     // FIN function barbouilleV(P0,P1) {
 // ****************************************************************************
 
 function onMouseUpRedraw(e) {
@@ -245,6 +230,7 @@ const h = cnv.clientHeight;
 const w = cnv.clientWidth;
 console.log(h,w);
 const lineOrSurf = document.getElementsByName("quoi");
+document.getElementById("line").click();   // pour choisir line par defaut
 let x = 0;
 let y = 0;
 let x0 = 0;

@@ -70,6 +70,9 @@ class Trajectory {
 	    this.itineraire[i].draw();
 	} // FIN draw()
     }
+    length() {
+	return this.itineraire.length;
+    }
 }     // FIN class Trajectory {
 // ******************************************************************************
 
@@ -221,10 +224,56 @@ function onMouseUpRedraw(e) {
 }     // FIN function oneMousUpRedraw(e) {
 // ****************************************************************************
 
+function telechargerFichier(nomFichier, contenu) {
+    // from chatgpt
+    const elementLien = document.createElement('a');
+    elementLien.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(contenu));
+    elementLien.setAttribute('download', nomFichier);
+    elementLien.style.display = 'none';
+    document.body.appendChild(elementLien);
+    elementLien.click();
+    document.body.removeChild(elementLien);
+}  // FIN function telechargerFichier(nomFichier, contenu) {
+// *****************************************************************************
+
+function onSave(){
+    // the Trajectory is encoded in a string which is saved in a file on the disk
+    let ans = "il y a ";
+    ans += itin.length();
+    ans += "pieces\n";
+    console.log(ans);
+    telechargerFichier("premierExample",ans);
+}     // FIN onSave()
+// *****************************************************************************
+
+function onLoad(){
+ document.getElementById("inputFile").click();   // pour choisir line par defautœ 
+}     // FIN onLoad()
+// *****************************************************************************
+
 // ****************************************************************************
 //                         EN AVANT SIMONE
 // ****************************************************************************
 console.log("hy");
+
+const contenuFichier = "Ceci est le contenu du fichier à sauvegarder.";
+//telechargerFichier("inputFile", contenuFichier)
+/*
+//from chatgpt
+document.getElementById('inputFile').addEventListener('change', function() {
+    const file = this.files[0]; // Récupère le premier fichier sélectionné 
+    if (file) {
+	const reader = new FileReader();
+	reader.onload = function(event) {
+	    const contenuFichier = event.target.result;
+	    // Faites quelque chose avec le contenu du fichier (par exemple, l'afficher dans la console)
+	    console.log(contenuFichier);
+	};
+	reader.readAsText(file);
+    }
+});
+*/
+const inputElement = document.getElementById('inputFile');
 const cnv = document.getElementById("canvas");
 const h = cnv.clientHeight;
 const w = cnv.clientWidth;
@@ -247,4 +296,4 @@ P0.show(ctx);
 cnv.addEventListener("mouseup",onMouseUpAddNewPiece);
 // other possibility cnv.addEventListener("mouseup",onMouseUpRedraw);
 
-			
+

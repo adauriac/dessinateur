@@ -19,12 +19,15 @@
   <body>
     <div class="aux">
       <form>
-	<label for="a" >I want to enter a </label>
+	<label for="a" >I want to enter </label>
+	<label for="a line">line</label>
 	<input type="radio" id="line" name="quoi" value="line" checked>
-	<label for="line">line</label>
+	<label for="surface"> a zig zag</label>
 	<input type="radio" id="surface" name="quoi" value="surface">
-	<label for="css">zig zag</label>
-	<input type="button" onclick="test()" value="test">
+	<!-- <input type="button" onclick="test()" value="test"> -->
+	<input type="button" onclick="onSave()" value="save">
+	<input type="button" onclick="onLoad()" value="load"> <!-- appelle le inpput type=file -->
+	<input type="file" id="inputFile" style="display:none"  />  <!-- invisible but called by the button "load" -->
 	<br>
        </form>
     </div>
